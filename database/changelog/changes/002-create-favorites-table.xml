@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="002-create-favorites-table" author="pokedex-dev">
+        <createTable tableName="favorites">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="pokemon_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="pokemon_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint 
+            baseTableName="favorites"
+            baseColumnNames="user_id"
+            constraintName="fk_favorites_user_id"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+        
+        <addUniqueConstraint 
+            tableName="favorites"
+            columnNames="user_id, pokemon_id"
+            constraintName="uk_user_pokemon"/>
+        
+        <createIndex tableName="favorites" indexName="idx_favorites_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
