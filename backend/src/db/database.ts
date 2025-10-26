@@ -1,7 +1,7 @@
-import {Pool} from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 const pool = new Pool({
     user: process.env.DB_USER || 'pokedex_user',
@@ -11,7 +11,11 @@ const pool = new Pool({
     port: parseInt(process.env.DB_PORT || '5432', 10),
 });
 
-export const query = (text:string, params?: any[]) => {
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
+});
+
+export const query = (text: string, params?: any[]) => {
     return pool.query(text, params);
 };
-
